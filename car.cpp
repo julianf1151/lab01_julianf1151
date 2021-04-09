@@ -31,8 +31,14 @@ Car::Car(char const* const manufacturerName, char const* const modelName,
 
 Car::Car(Car const& o)
 {
-    manufacturer = const_cast<char*>(o.getManufacturer());
-    model = const_cast<char*>(o.getModel());
+    char* *s1 = new char*(strdup(o.getManufacturer()));
+    manufacturer = *s1;
+    delete s1;
+
+    char* *s2 = new char*(strdup(o.getModel()));
+    model = *s2;
+    delete s2;
+    
     zeroToSixtyNs = o.getStats().zeroToSixtyNs;
     headonDragCoeff = o.getStats().headonDragCoeff;
     backseatDoors = o.getBackseatDoors();
@@ -42,21 +48,27 @@ Car::Car(Car const& o)
 
 Car& Car::operator=(Car const& o)
 {
-    this -> manufacturer = o.manufacturer;
-    this -> model = o.model;
-    this -> zeroToSixtyNs = o.zeroToSixtyNs;
-    this -> headonDragCoeff = o.headonDragCoeff;
-    this -> backseatDoors = o.backseatDoors;
-    this -> horsepower = o.horsepower;
-    this -> seatCount = o.seatCount;
+    char* *s1 = new char*(strdup(o.getManufacturer()));
+    this->manufacturer = *s1;
+    delete s1;
+
+    char* *s2 = new char*(strdup(o.getModel()));
+    this->model = *s2;
+    delete s2;
+
+    this -> zeroToSixtyNs = o.getStats().zeroToSixtyNs;
+    this -> headonDragCoeff = o.getStats().headonDragCoeff;
+    this -> backseatDoors = o.getBackseatDoors();
+    this -> horsepower = o.getStats().horsepower;
+    this -> seatCount = o.getSeatCount();
 
     return *this;
 }
 
 Car::~Car()
 {
-    delete[] manufacturer;
-    delete[] model;
+    free(manufacturer);
+    free(model);
 }
 
 char const* Car::getManufacturer() const
@@ -120,14 +132,19 @@ void Car::reexamineDoors(DoorKind newDoorKind)
 
     char const* man = "Manny";
     char const* mod = "Mod";
-    PerformanceStats perf{500,1000,1.234};
+    PerformanceStats perf1{500,1000,1.234};
     uint8_t nums = 4;
+    uint8_t num2 = 3;
     DoorKind doors = Hinge;
 
-    Car car1{man, mod, perf, nums, doors};
+    Car car1;
+
+    Car car2{man, mod, perf1, nums, doors};
+
+    car1 = car2;
 
     cout << static_cast<string>(car1.getModel()) << endl;
-    cout << car1.getManufacturer() << endl;
+    cout << static_cast<string>(car1.getManufacturer()) << endl;
     cout << static_cast<int>(car1.getSeatCount()) << endl;
 
     return 0;
