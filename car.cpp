@@ -55,8 +55,7 @@ Car& Car::operator=(Car const& o)
 
 Car::~Car()
 {
-    delete manufacturer;
-    delete model;
+    
 }
 
 char const* Car::getManufacturer() const
